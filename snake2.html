@@ -13,27 +13,33 @@
             padding-top:30px;
             color:#fff;
         }
+        .info{
+            font-size:20px;
+            margin-bottom:8px;
+        }
         #gameCanvas{
             border:2px solid #4cd964;
             background:#000;
-        }
-        .info{
-            font-size:20px;
-            margin-bottom:10px;
         }
     </style>
 </head>
 <body>
     <div class="info">当前分数：<span id="score">0</span></div>
+    <div class="info">🏆 最高分：<span id="highScore">0</span></div>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreDom = document.getElementById('score');
+        const highScoreDom = document.getElementById('highScore');
 
         const blockSize = 20;
         const count = canvas.width / blockSize;
+
+        // 读取本地保存的最高分
+        let highScore = localStorage.getItem("snakeHighScore") || 0;
+        highScoreDom.innerText = highScore;
 
         // 蛇数组，每个元素 {x,y}
         let snake = [{x:10, y:10}];
@@ -95,14 +101,16 @@
             // 撞墙判定
             if(head.x <0 || head.y <0 || head.x >= count || head.y >= count){
                 gameOver = true;
-                alert(`游戏结束！你的分数：${score}`);
+                checkHighScore();
+                alert(`游戏结束！你的分数：${score}\n🏆历史最高分：${highScore}`);
                 return;
             }
             // 撞到自己
             for(let seg of snake){
                 if(seg.x === head.x && seg.y === head.y){
                     gameOver = true;
-                    alert(`游戏结束！你的分数：${score}`);
+                    checkHighScore();
+                    alert(`游戏结束！你的分数：${score}\n🏆历史最高分：${highScore}`);
                     return;
                 }
             }
@@ -117,6 +125,15 @@
                 speed = Math.max(40, 120 - score/2);
             }else{
                 snake.pop();
+            }
+        }
+
+        // 检查是否刷新最高分，保存到本地
+        function checkHighScore(){
+            if(score > highScore){
+                highScore = score;
+                localStorage.setItem("snakeHighScore", highScore);
+                highScoreDom.innerText = highScore;
             }
         }
 

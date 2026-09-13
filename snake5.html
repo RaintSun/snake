@@ -7,6 +7,8 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#111;color:#fff;font-family:Consolas,monospace;padding:10px}
 #info{font-size:18px;margin-bottom:8px;line-height:1.5}
+#control{margin-bottom:8px;}
+button{padding:6px 12px;margin-right:8px;font-size:14px;cursor:pointer}
 #game{border:2px solid #666;background:#000}
 </style>
 </head>
@@ -16,6 +18,10 @@ body{background:#111;color:#fff;font-family:Consolas,monospace;padding:10px}
 本局得分: <span id="score">0</span> |
 历史累计得分: <span id="totalScore">0</span>
 </div>
+<div id="control">
+<button id="btnResetGame">重置本局</button>
+<button id="btnClearStat">清空统计数据</button>
+</div>
 <canvas id="game" width="400" height="400"></canvas>
 
 <script>
@@ -24,13 +30,15 @@ const ctx = canvas.getContext('2d');
 const infoGameCount = document.getElementById('gameCount');
 const infoScore = document.getElementById('score');
 const infoTotalScore = document.getElementById('totalScore');
+const btnResetGame = document.getElementById('btnResetGame');
+const btnClearStat = document.getElementById('btnClearStat');
 
 const gridSize = 20;
 const cell = 20;
 let snake, food, dir, nextDir, score;
 let gameOver = false;
 
-// ========== 新增：读取本地存储 局数、累计总分 ==========
+// 读取本地存储 局数、累计总分
 let gameCount = Number(localStorage.getItem('snake_gameCount')) || 0;
 let totalScore = Number(localStorage.getItem('snake_totalScore')) || 0;
 infoGameCount.textContent = gameCount;
@@ -41,7 +49,6 @@ function rand(min,max){
 }
 
 function resetGame(){
-  // 每一次重置 = 新一局开始
   gameOver = false;
   score = 0;
   dir = {x:1,y:0};
@@ -103,18 +110,37 @@ function step(){
   draw();
 }
 
-// ========== 游戏结束逻辑：统计本局并保存到localStorage ==========
+// 游戏结束逻辑：统计本局并保存到localStorage
 function endGame(){
   gameOver = true;
   // 本局结束：局数+1，分数计入累计
   gameCount += 1;
   totalScore += score;
-  // 持久化保存
   localStorage.setItem('snake_gameCount', gameCount);
   localStorage.setItem('snake_totalScore', totalScore);
   updateScoreUI();
-  setTimeout(resetGame,1200); // 1.2秒自动重启，兼容你之前AI
+  setTimeout(resetGame,1200);
 }
+
+// ========== 按钮事件 ==========
+// 重置本局按钮：立刻结束当前对局，计入统计，马上开新局
+btnResetGame.onclick = function(){
+  if(!gameOver){
+    endGame();
+  }else{
+    resetGame();
+  }
+};
+// 清空统计按钮，带确认弹窗，防止误点
+btnClearStat.onclick = function(){
+  if(confirm("确定清空所有局数和累计得分？此操作不可恢复！")){
+    localStorage.removeItem('snake_gameCount');
+    localStorage.removeItem('snake_totalScore');
+    gameCount = 0;
+    totalScore = 0;
+    updateScoreUI();
+  }
+};
 
 // 键盘方向控制
 document.addEventListener('keydown',e=>{

@@ -6,4 +6,4 @@ Project repository for Snake.
 参考视频：https://www.bilibili.com/video/BV1ySLc6QEcB/?spm_id_from=333.1007.top_right_bar_window_history.content.click&vd_source=0ceb11dc3ba6ede32e64a0765f3e0148
 1.cd:有点像我的世界里的传送，在git bash里可以进入文件
 2.ls:list  可以将文件里的内容列出来
-3.mkdir 创建文档sdasdasd
+3.mkdir 创建文档

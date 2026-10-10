@@ -1,4 +1,10 @@
 # Snake
+！！个人网站！！
+
+
+https://raintsun.github.io/my-blog/
+
+
 
 Project repository for Snake.
 （以git flow流程）分支（git branch）可以在保障主干main稳定的基础上，从一次（主干main 或 一个feature......）commit向外进行开发新功能，发布新版本（realise），或线上紧急修bug（hotfix）。
